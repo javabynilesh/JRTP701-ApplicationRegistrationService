@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nk.binding.CitizenAppRegistrationInput;
+import com.nk.exception.InvalidSSNException;
 import com.nk.service.ICitizenApplicationRegistrationService;
 
 @RestController
@@ -19,18 +20,10 @@ public class CitizenApplicationRegistrationOperationController {
 	private ICitizenApplicationRegistrationService registrationService;
 	
 	@PostMapping("/save")
-	public ResponseEntity<String> saveCitizenApplication(@RequestBody CitizenAppRegistrationInput inputs){
-		try {
-			//use service
-			int appId= registrationService.registerCitizenApplication(inputs);
-			if(appId > 0) {
-				return new ResponseEntity<>("Citizen Application is registered with the id:"+appId,HttpStatus.CREATED);
-			}else {
-				return new ResponseEntity<String>("Invalid SSN or Citizen must belong to california state::",HttpStatus.OK);
-			}
-		}//try
-		catch(Exception e) {
-			return new ResponseEntity<String>(e.getMessage(),HttpStatus.BAD_REQUEST);
-		}
+	public ResponseEntity<String> saveCitizenApplication(@RequestBody CitizenAppRegistrationInput inputs) throws InvalidSSNException{
+		//use service
+		int appId= registrationService.registerCitizenApplication(inputs);
+		return new ResponseEntity<>("Citizen Application is registered with the id:"+appId,HttpStatus.CREATED);
+		
 	}//method
 }//class
